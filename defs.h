@@ -1,8 +1,6 @@
-#ifndef __DEFS__
-#define __DEFS__
+#pragma once
 
 #ifndef CLIENT_ID
-#define CLIENT_ID NULL
 #error "CLIENT_ID must be defined"
 #endif  // !CLIENT_ID
 
@@ -29,5 +27,3 @@
 #ifndef SMALL_TEXT
 #define SMALL_TEXT NULL
 #endif  // !SMALL_TEXT
-
-#endif  // !__DEFS__

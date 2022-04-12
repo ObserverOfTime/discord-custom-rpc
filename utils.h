@@ -1,5 +1,4 @@
-#ifndef __UTILS__
-#define __UTILS__
+#pragma once
 
 #ifdef NDEBUG
 #define LOG(msg, ...)
@@ -49,13 +48,11 @@
 
 #define INT_TO_BYTES(n, bytes) \
     { \
-        (bytes)[0] = (n) & 0xFF; \
+        (bytes)[0] = (n) >> 0 & 0xFF; \
         (bytes)[1] = (n) >> 8 & 0xFF; \
         (bytes)[2] = (n) >> 16 & 0xFF; \
         (bytes)[3] = (n) >> 24 & 0xFF; \
     }
 
 #define BYTES_TO_INT(bytes) \
-    ((bytes)[0] | (bytes)[1] << 8 | (bytes)[2] << 16 | (bytes)[3] << 24)
-
-#endif  // !__UTILS__
+    ((bytes)[0] << 0 | (bytes)[1] << 8 | (bytes)[2] << 16 | (bytes)[3] << 24)

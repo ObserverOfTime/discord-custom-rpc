@@ -41,7 +41,7 @@ void rpc_send(rpc_op op, const char *data) {
     INT_TO_BYTES(op, op_b);
     INT_TO_BYTES(len, len_b);
 
-    uint8_t *payload = (uint8_t *) malloc(8L + len);
+    uint8_t *payload = malloc(8L + len);
     memcpy(payload, op_b, 4L);
     memcpy(payload + 4, len_b, 4L);
     memcpy(payload + 8, data, len);
@@ -74,7 +74,7 @@ void rpc_recv(uint8_t *op, uint8_t *len, json_object **obj) {
     uint32_t l = BYTES_TO_INT(len);
     LOG_B(len);
 
-    char *response = (char *) malloc(l);
+    char *response = malloc(l);
     if (recv(sock, response, l, 0) == -1) {
         fflush(stderr);
         perror("[ERROR] recv failed");
@@ -110,7 +110,7 @@ void rpc_handshake() {
 void rpc_set_activity() {
     uint8_t op[4], len[4], uuid[16];
 
-    char *nonce = (char *) malloc(37L);
+    char *nonce = malloc(37L);
     uuid_generate_random(uuid);
     uuid_unparse_upper(uuid, nonce);
 
