@@ -1,9 +1,12 @@
 #pragma once
 
 #ifdef NDEBUG
-#define LOG(msg, ...)
+#define LOG(...)
 #define LOG_B(bytes)
 #else
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#endif
 #define LOG(msg, ...) fprintf(stderr, msg, ##__VA_ARGS__)
 #define LOG_B(bytes) \
     LOG("\\x%02x\\x%02x\\x%02x\\x%02x", /**/ \
@@ -14,6 +17,11 @@
 
 #define PID ((int32_t) getpid())
 
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wgnu-conditional-omitted-operand"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif
 #define TMP_PATH \
     ( \
       getenv("XDG_RUNTIME_DIR") ?: \

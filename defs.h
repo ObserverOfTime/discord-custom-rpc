@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef CLIENT_ID
-#error "CLIENT_ID must be defined"
+#error CLIENT_ID must be defined
 #endif  // !CLIENT_ID
 
 #ifndef DETAILS

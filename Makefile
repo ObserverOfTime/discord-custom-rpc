@@ -1,16 +1,16 @@
 CC ?= gcc
-CPPFLAGS ?= -D_FORTIFY_SOURCE=2
-CFLAGS ?= -std=gnu11 -Wall -Wextra -O2
+CFLAGS ?= -std=gnu11 -Wall -Wextra
+LDFLAGS ?= -Wl,--build-id=uuid
 
 -include Env.mak
 
-override LDFLAGS += -ljson-c -luuid
+LDFLAGS += -ljson-c -luuid
 
 ifdef DEBUG
-CFLAGS += -g
-LDFLAGS += -Wl,--strip-unneeded
+CFLAGS += -g -Og
 else
-CPPFLAGS += -DNDEBUG
+CFLAGS += -flto -O2
+CPPFLAGS += -DNDEBUG -D_FORTIFY_SOURCE=2
 LDFLAGS += -Wl,--strip-all
 endif
 
@@ -25,7 +25,16 @@ rpc: CPPFLAGS += $(call __d,LARGE_IMAGE)
 rpc: CPPFLAGS += $(call __d,LARGE_TEXT)
 rpc: CPPFLAGS += $(call __d,SMALL_IMAGE)
 rpc: CPPFLAGS += $(call __d,SMALL_TEXT)
-rpc: rpc.c; @$(CC) $(CPPFLAGS) $(CFLAGS) $< $(LDFLAGS) -o $@
+rpc: rpc.o
 
 .PHONY: run
-run: rpc; @./$^
+run: rpc; @./$<
+
+.PHONY: clean
+clean: ; $(RM) rpc rpc.o
+
+.PHONY: lint
+lint: $(wildcard *.[ch]); clang-tidy $^
+
+.PHONY: format
+format: $(wildcard *.[ch]); clang-format -i $^

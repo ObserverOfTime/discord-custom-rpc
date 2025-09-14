@@ -4,18 +4,17 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <time.h>
 #include <unistd.h>
 #include <uuid/uuid.h>
 
-#include "defs.h"
+#include "defs.h" // IWYU pragma: keep
 #include "utils.h"
 
 typedef enum { OP_AUTHENTICATE, OP_FRAME, OP_CLOSE } rpc_op;
 
 static int32_t sock = -1;
 
-void rpc_connect() {
+void rpc_connect(void) {
     struct sockaddr_un addr;
     if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
         perror("[ERROR] socket failed");
@@ -86,7 +85,7 @@ void rpc_recv(uint8_t *op, uint8_t *len, json_object **obj) {
     free(response);
 }
 
-void rpc_handshake() {
+void rpc_handshake(void) {
     json_object *r_obj, *s_obj = JSON_NEW();
     JSON_ADD(s_obj, v, 1, int);
     JSON_ADD(s_obj, client_id, CLIENT_ID, string);
@@ -107,7 +106,7 @@ void rpc_handshake() {
     JSON_FREE(r_obj);
 }
 
-void rpc_set_activity() {
+void rpc_set_activity(void) {
     uint8_t op[4], len[4], uuid[16];
 
     char *nonce = malloc(37L);
@@ -154,7 +153,7 @@ void rpc_set_activity() {
     JSON_FREE(r_obj);
 }
 
-static void rpc_disconnect() {
+static void rpc_disconnect(void) {
     if (sock != -1) {
         rpc_send(OP_CLOSE, "");
         close(sock);
@@ -166,7 +165,7 @@ static void quit(__attribute__((unused)) int32_t sig) {
     exit(0);
 }
 
-int main() {
+int main(void) {
     atexit(rpc_disconnect);
     signal(SIGINT, quit);
     rpc_connect();
